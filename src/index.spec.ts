@@ -1,24 +1,31 @@
 import { Controller } from "./controller";
-import { Delegate } from "./delegate";
-import { Emittable } from "./emittable";
+import { Plugin } from "./component";
+
+describe("Plugin", () => {
+  it("should throw if the base context is missing", () => {
+    class TestPlugin extends Plugin {}
+    const plugin = new TestPlugin();
+    expect(() => plugin.context).toThrow();
+  });
+});
 
 describe("Controller", () => {
-  it("is able to compose and retrieve the delegate class", () => {
+  it("is able to compose and lookup the plugin", () => {
     class TestController extends Controller {}
-    class TestDelegate1 extends Delegate {
-      constructor(emittable: Emittable, public a: number) {
-        super(emittable);
+    class TestPlugin1 extends Plugin {
+      constructor(public a: number) {
+        super();
       }
     }
-    class TestDelegate2 extends Delegate {
-      b = 2;
-    }
-
+    class TestPlugin2 extends Plugin {}
+    class TestPlugin3 extends Plugin {}
     const controller = new TestController()
-      .compose(TestDelegate1, 33)
-      .compose(TestDelegate2);
-
-    expect(controller.find(TestDelegate1)).toEqual(expect.any(TestDelegate1));
-    expect(controller.find(TestDelegate1).a).toBe(33);
+      .compose(TestPlugin1, 33)
+      .compose(TestPlugin2);
+    expect(controller.find(TestPlugin3)).toBeNull();
+    expect(controller.find(TestPlugin2)).toEqual(expect.any(TestPlugin2));
+    expect(controller.find(TestPlugin1)).toEqual(expect.any(TestPlugin1));
+    expect(controller.find(TestPlugin1).a).toBe(33);
+    expect(controller.find(TestPlugin1).context).toBe(controller);
   });
 });

@@ -1,3 +1,3 @@
+export * from "./component";
 export * from "./controller";
-export * from "./delegate";
-export type * from "./emittable";
+export * from "./interfaces";

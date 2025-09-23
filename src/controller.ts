@@ -1,29 +1,47 @@
-import { Delegate } from "./delegate";
-import { Emittable } from "./emittable";
+import { PluginComponent, PluginSubstrate } from "./interfaces";
 
-export abstract class Controller extends Emittable {
-  #registry = new Map<string, Delegate>();
+export abstract class Controller
+  extends EventTarget
+  implements PluginSubstrate
+{
+  #registry = new Map<string, PluginComponent>();
 
   compose<
-    Plugin extends Delegate,
-    PluginParameters extends unknown[],
-    PluginClass extends {
-      new (emittable: Emittable, ...args: PluginParameters): Plugin;
-    }
-  >(plugin: PluginClass, ...args: PluginParameters) {
-    this.#registry.set(plugin.name, new plugin(this, ...args));
+    ComponentConstructor extends { new (...args: any[]): PluginComponent }
+  >(
+    component: ComponentConstructor,
+    ...parameters: ComponentConstructor extends { new (...args: infer P): any }
+      ? P
+      : never[]
+  ) {
+    const controller = this;
+    const plugin = new (class extends component {
+      override get context() {
+        return controller;
+      }
+    })(...parameters);
+    this.#registry.set(component.name, plugin);
     return this;
   }
 
   find<
-    Plugin extends Delegate,
-    PluginClass extends {
-      new (emittable: Emittable, ...args: any[]): Plugin;
-    }
-  >(plugin: PluginClass): InstanceType<PluginClass> | null {
+    T extends PluginComponent,
+    PluginConstructor extends { new (...args: any[]): T }
+  >(plugin: PluginConstructor): InstanceType<PluginConstructor> | null {
     return (
-      (this.#registry.get(plugin.name) as InstanceType<PluginClass>) ||
+      (this.#registry.get(plugin.name) as InstanceType<PluginConstructor>) ||
       null
     );
+  }
+
+  require<
+    T extends PluginComponent,
+    PluginConstructor extends { new (...args: any[]): T }
+  >(plugin: PluginConstructor): InstanceType<PluginConstructor> {
+    const found = this.find(plugin);
+    if (!found) {
+      throw new Error(`Controller is missing required plugin: ${plugin.name}`);
+    }
+    return found as InstanceType<PluginConstructor>;
   }
 }
