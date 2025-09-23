@@ -8,7 +8,7 @@ export interface PluginSubstrate {
     ): InstanceType<ComponentConstructor> | null;
   };
 
-  require(): {
+  require: {
     <
       T extends PluginComponent,
       ComponentConstructor extends { new (...args: any): T }
