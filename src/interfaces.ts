@@ -1,23 +1,3 @@
-export interface PluginSubstrate {
-  find: {
-    <
-      T extends PluginComponent,
-      ComponentConstructor extends { new (...args: any): T }
-    >(
-      component: ComponentConstructor
-    ): InstanceType<ComponentConstructor> | null;
-  };
+export interface Platform {}
 
-  require: {
-    <
-      T extends PluginComponent,
-      ComponentConstructor extends { new (...args: any): T }
-    >(
-      component: ComponentConstructor
-    ): InstanceType<ComponentConstructor>;
-  }
-}
-
-export interface PluginComponent {
-  get context(): PluginSubstrate;
-}
+export interface Plugin {}
