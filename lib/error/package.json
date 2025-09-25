@@ -1,0 +1,11 @@
+{
+  "name": "@lib/error",
+  "version": "1.0.0",
+  "exports": {
+    ".": "./index.ts",
+    "./component": "./component/index.ts",
+    "./plugin": "./plugin/index.ts"
+  },
+  "license": "MIT",
+  "private": true
+}

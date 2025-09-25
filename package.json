@@ -28,5 +28,10 @@
     "typescript": "^5.9.2",
     "webpack": "^5.101.3",
     "webpack-cli": "^5.1.4"
-  }
+  },
+  "workspaces": [
+    "lib/component",
+    "lib/error",
+    "lib/plugin-context"
+  ]
 }
