@@ -32,6 +32,6 @@
   "workspaces": [
     "lib/component",
     "lib/error",
-    "lib/plugin-context"
+    "lib/plugin"
   ]
 }
