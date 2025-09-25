@@ -32,6 +32,7 @@ const config = {
   },
   output: {
     clean: true,
+    filename: "unplug.js",
     library: {
       type: "module",
     },
